@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight Cosmic Coffee & Lo-Fi Radio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Space Grotesk & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            /* Default Theme: Midnight (Полночь) */
+            --bg-primary: #090717;
+            --bg-secondary: #120e2b;
+            --accent-primary: #9d65ff;
+            --accent-secondary: #4cc9f0;
+            --accent-glow: rgba(157, 101, 255, 0.35);
+            --card-bg: rgba(20, 16, 46, 0.52);
+            --card-border: rgba(167, 139, 250, 0.22);
+            --card-border-hover: rgba(167, 139, 250, 0.5);
+            --text-main: #f3f0ff;
+            --text-muted: #a59ec9;
+            --pill-bg: rgba(255, 255, 255, 0.05);
+            --pill-active-bg: rgba(157, 101, 255, 0.28);
+            --slider-track: rgba(255, 255, 255, 0.14);
+        }
+
+        [data-theme="mars"] {
+            /* Theme: Mars (Марс) */
+            --bg-primary: #17080d;
+            --bg-secondary: #2b1019;
+            --accent-primary: #ff6b6b;
+            --accent-secondary: #f9a826;
+            --accent-glow: rgba(255, 107, 107, 0.35);
+            --card-bg: rgba(42, 16, 25, 0.55);
+            --card-border: rgba(255, 135, 135, 0.24);
+            --card-border-hover: rgba(255, 135, 135, 0.52);
+            --text-main: #fff1f2;
+            --text-muted: #d4a3ad;
+            --pill-bg: rgba(255, 255, 255, 0.05);
+            --pill-active-bg: rgba(255, 107, 107, 0.28);
+            --slider-track: rgba(255, 255, 255, 0.14);
+        }
+
+        [data-theme="aurora"] {
+            /* Theme: Aurora (Сияние) */
+            --bg-primary: #051412;
+            --bg-secondary: #0b2622;
+            --accent-primary: #10b981;
+            --accent-secondary: #38bdf8;
+            --accent-glow: rgba(16, 185, 129, 0.35);
+            --card-bg: rgba(12, 36, 33, 0.54);
+            --card-border: rgba(52, 211, 153, 0.24);
+            --card-border-hover: rgba(52, 211, 153, 0.52);
+            --text-main: #ecfdf5;
+            --text-muted: #94c7ba;
+            --pill-bg: rgba(255, 255, 255, 0.05);
+            --pill-active-bg: rgba(16, 185, 129, 0.28);
+            --slider-track: rgba(255, 255, 255, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.8s ease, color 0.6s ease;
+        }
+
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+        }
+
+        .font-mono-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Background Canvas */
+        #cosmos-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Subtle Retro-Futuristic Scanline & Vignette Overlay */
+        .space-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 40%, transparent 45%, rgba(0, 0, 0, 0.48) 100%);
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            transition: background 0.7s ease, border-color 0.35s ease, transform 0.3s ease, box-shadow 0.35s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--card-border-hover);
+        }
+
+        /* Custom Range Slider */
+        input[type="range"].cosmic-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--slider-track);
+            border-radius: 999px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        input[type="range"].cosmic-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 12px var(--accent-glow);
+            cursor: pointer;
+            transition: transform 0.15s ease, background-color 0.5s ease;
+        }
+
+        input[type="range"].cosmic-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.18);
+        }
+
+        input[type="range"].cosmic-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 12px var(--accent-glow);
+            cursor: pointer;
+            transition: transform 0.15s ease, background-color 0.5s ease;
+        }
+
+        /* Toggle Switch */
+        .cosmic-toggle {
+            position: relative;
+            width: 46px;
+            height: 26px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .cosmic-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .cosmic-toggle.active {
+            background: var(--accent-primary);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .cosmic-toggle.active::after {
+            transform: translateX(20px);
+            background: #ffffff;
+        }
+
+        /* Ingredient Pill */
+        .ingredient-pill {
+            background: var(--pill-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            transition: all 0.25s ease;
+        }
+
+        .ingredient-pill:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            transform: translateY(-1px);
+        }
+
+        .ingredient-pill.selected {
+            background: var(--pill-active-bg);
+            border-color: var(--accent-primary);
+            color: #ffffff;
+            box-shadow: 0 0 16px var(--accent-glow), inset 0 0 8px rgba(255, 255, 255, 0.08);
+        }
+
+        /* Primary Glow Button */
+        .btn-cosmic-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #ffffff;
+            box-shadow: 0 8px 25px -4px var(--accent-glow);
+            transition: all 0.3s ease;
+        }
+
+        .btn-cosmic-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -2px var(--accent-glow);
+            filter: brightness(1.08);
+        }
+
+        .btn-cosmic-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Steam & Drink Animations */
+        @keyframes steamRise1 {
+            0% { transform: translateY(8px) scaleX(0.95); opacity: 0; }
+            35% { opacity: 0.7; }
+            75% { opacity: 0.35; }
+            100% { transform: translateY(-28px) scaleX(1.12); opacity: 0; }
+        }
+        @keyframes steamRise2 {
+            0% { transform: translateY(10px) scaleX(1.05); opacity: 0; }
+            40% { opacity: 0.65; }
+            80% { opacity: 0.25; }
+            100% { transform: translateY(-32px) scaleX(0.9); opacity: 0; }
+        }
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.85); }
+            50% { opacity: 1; transform: scale(1.25); }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .steam-path-1 { animation: steamRise1 3.4s infinite ease-in-out; }
+        .steam-path-2 { animation: steamRise2 4.1s infinite ease-in-out 1.1s; }
+        .steam-path-3 { animation: steamRise1 3.7s infinite ease-in-out 2.2s; }
+        .drink-float { animation: floatSlow 5s infinite ease-in-out; }
+        .stardust-sparkle { animation: starTwinkle 2.2s infinite ease-in-out; transform-origin: center; }
+
+        /* Smooth transitions for SVG drink fills */
+        .svg-layer-transition {
+            transition: fill 0.65s ease, stop-color 0.65s ease, opacity 0.5s ease;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background: rgba(4, 3, 12, 0.78);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Pulse Live Dot */
+        @keyframes livePulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.45); opacity: 0.45; }
+        }
+        .live-dot {
+            animation: livePulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body data-theme="midnight" class="antialiased selection:bg-purple-500/30 selection:text-white">
+
+    <!-- Animated Starfield & Nebula Canvas -->
+    <canvas id="cosmos-canvas"></canvas>
+    <div class="space-overlay"></div>
+
+    <!-- Main App Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 flex flex-col gap-6">
+
+        <!-- TOP HEADER BAR -->
+        <header class="glass-card rounded-3xl px-5 py-4 flex flex-col lg:flex-row items-center justify-between gap-4">
+            <!-- Brand / Station Title -->
+            <div class="flex items-center gap-3.5 w-full lg:w-auto justify-between lg:justify-start">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center relative overflow-hidden border border-white/20 shadow-lg" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">
+                        <i data-lucide="coffee" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 id="app-title" class="font-display font-bold text-lg sm:text-xl tracking-tight text-white">
+                                Полуночная Космическая Кофейня
+                            </h1>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wider bg-white/10 border border-white/15">
+                                <span class="w-2 h-2 rounded-full live-dot" style="background-color: var(--accent-secondary);"></span>
+                                <span id="live-badge">ON AIR</span>
+                            </span>
+                        </div>
+                        <p id="app-subtitle" class="text-xs sm:text-sm" style="color: var(--text-muted);">
+                            Орбитальная станция «Кеплер-452b» • Lo-Fi Радио и Эмбиент
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls: Theme Switcher & Language Switcher -->
+            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-3 w-full lg:w-auto">
+                <!-- Mood Theme Switcher -->
+                <div class="flex items-center p-1 rounded-2xl bg-black/30 border border-white/10" role="group" aria-label="Theme Switcher">
+                    <button type="button" onclick="setTheme('midnight')" data-theme-btn="midnight" class="theme-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-all cursor-pointer">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-[0_0_8px_#c084fc]"></span>
+                        <span data-i18n="theme_midnight">Полночь</span>
+                    </button>
+                    <button type="button" onclick="setTheme('mars')" data-theme-btn="mars" class="theme-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-all cursor-pointer">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185]"></span>
+                        <span data-i18n="theme_mars">Марс</span>
+                    </button>
+                    <button type="button" onclick="setTheme('aurora')" data-theme-btn="aurora" class="theme-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-all cursor-pointer">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+                        <span data-i18n="theme_aurora">Сияние</span>
+                    </button>
+                </div>
+
+                <!-- Language Switcher (RU / KZ / EN) -->
+                <div class="flex items-center p-1 rounded-2xl bg-black/30 border border-white/10" role="group" aria-label="Language Switcher">
+                    <button type="button" onclick="setLanguage('ru')" data-lang-btn="ru" class="lang-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">RU</button>
+                    <button type="button" onclick="setLanguage('kz')" data-lang-btn="kz" class="lang-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">KZ</button>
+                    <button type="button" onclick="setLanguage('en')" data-lang-btn="en" class="lang-btn px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">EN</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- BENTO GRID LAYOUT -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- LEFT COLUMN (7 cols on lg): COSMIC BARISTA / DRINK BUILDER -->
+            <section class="lg:col-span-7 glass-card rounded-3xl p-5 sm:p-7 flex flex-col gap-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-5 h-5" style="color: var(--accent-secondary);"></i>
+                            <h2 data-i18n="barista_title" class="font-display font-bold text-xl sm:text-2xl">Космический бариста</h2>
+                        </div>
+                        <p data-i18n="barista_subtitle" class="text-xs sm:text-sm mt-1" style="color: var(--text-muted);">
+                            Соберите авторский напиток для ночного полёта сквозь туманности
+                        </p>
+                    </div>
+                    <button type="button" onclick="randomizeDrink()" class="self-start sm:self-center px-3.5 py-2 rounded-xl text-xs font-medium bg-white/10 hover:bg-white/15 border border-white/15 flex items-center gap-1.5 transition cursor-pointer">
+                        <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
+                        <span data-i18n="btn_random_drink">Случайный рецепт</span>
+                    </button>
+                </div>
+
+                <!-- Drink Visualizer + Controls Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+
+                    <!-- Interactive SVG Drink Glass & Live Recipe Card (5 cols) -->
+                    <div class="md:col-span-5 flex flex-col items-center justify-between rounded-3xl p-5 bg-black/25 border border-white/10 relative overflow-hidden">
+                        <!-- Ambient Glow Behind Glass -->
+                        <div id="glass-glow" class="absolute w-44 h-44 rounded-full blur-3xl opacity-45 pointer-events-none transition-colors duration-700" style="background: var(--accent-primary); top: 20%;"></div>
+
+                        <!-- Detailed SVG Cosmic Cup -->
+                        <div class="relative z-10 w-44 h-56 flex items-center justify-center drink-float">
+                            <svg id="cosmic-drink-svg" viewBox="0 0 220 270" class="w-full h-full drop-shadow-[0_14px_24px_rgba(0,0,0,0.65)]" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <!-- Glass Clip Path -->
+                                    <clipPath id="glass-interior-clip">
+                                        <path d="M 56 86 L 164 86 L 151 224 C 150 233 142 239 133 239 L 87 239 C 78 239 70 233 69 224 Z" />
+                                    </clipPath>
+
+                                    <!-- Main Base Gradient -->
+                                    <linearGradient id="drink-base-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop id="grad-base-top" offset="0%" stop-color="#4a2c2a" class="svg-layer-transition" />
+                                        <stop id="grad-base-bottom" offset="100%" stop-color="#1e1018" class="svg-layer-transition" />
+                                    </linearGradient>
+
+                                    <!-- Milk Swirl Gradient -->
+                                    <linearGradient id="drink-milk-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop id="grad-milk-1" offset="0%" stop-color="#f5ebe0" stop-opacity="0.88" class="svg-layer-transition" />
+                                        <stop id="grad-milk-2" offset="100%" stop-color="#e3d5ca" stop-opacity="0.35" class="svg-layer-transition" />
+                                    </linearGradient>
+
+                                    <!-- Syrup Bottom Layer Gradient -->
+                                    <linearGradient id="drink-syrup-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop id="grad-syrup-1" offset="0%" stop-color="#fde047" stop-opacity="0.2" class="svg-layer-transition" />
+                                        <stop id="grad-syrup-2" offset="100%" stop-color="#f59e0b" stop-opacity="0.92" class="svg-layer-transition" />
+                                    </linearGradient>
+
+                                    <!-- Glass Reflection -->
+                                    <linearGradient id="glass-sheen" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28" />
+                                        <stop offset="25%" stop-color="#ffffff" stop-opacity="0.05" />
+                                        <stop offset="80%" stop-color="#ffffff" stop-opacity="0.02" />
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.2" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Animated Steam Wisps -->
+                                <g id="steam-group" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65">
+                                    <path class="steam-path-1" d="M 85 68 C 78 56, 94 46, 86 32" />
+                                    <path class="steam-path-2" d="M 110 64 C 118 50, 102 40, 112 24" />
+                                    <path class="steam-path-3" d="M 134 68 C 127 55, 141 45, 133 31" />
+                                </g>
+
+                                <!-- Retro-Futuristic Glass Straw (Back part) -->
+                                <path d="M 138 30 L 116 218" stroke="rgba(255,255,255,0.45)" stroke-width="8" stroke-linecap="round" />
+                                <path d="M 138 30 L 116 218" stroke="var(--accent-secondary)" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+
+                                <!-- Glass Back Rim -->
+                                <ellipse cx="110" cy="84" rx="58" ry="10" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" />
+
+                                <!-- LIQUID CONTENTS CLIPPED INSIDE GLASS -->
+                                <g clip-path="url(#glass-interior-clip)">
+                                    <!-- Base Liquid Layer -->
+                                    <rect x="45" y="96" width="130" height="150" fill="url(#drink-base-grad)" />
+
+                                    <!-- Milk Layer / Swirl Wave -->
+                                    <g id="svg-milk-layer" class="svg-layer-transition" opacity="1">
+                                        <path d="M 45 102 Q 82 118, 115 104 T 175 106 L 175 182 Q 130 165, 95 185 T 45 178 Z" fill="url(#drink-milk-grad)" />
+                                        <!-- Creamy Foam Top -->
+                                        <ellipse cx="110" cy="98" rx="56" ry="11" id="svg-foam-top" fill="#faf3eb" class="svg-layer-transition" />
+                                    </g>
+
+                                    <!-- Syrup Layer at Bottom -->
+                                    <g id="svg-syrup-layer" class="svg-layer-transition" opacity="1">
+                                        <path d="M 45 196 Q 85 186, 115 198 T 175 194 L 175 245 L 45 245 Z" fill="url(#drink-syrup-grad)" />
+                                    </g>
+
+                                    <!-- Floating Cosmic Ice / Bubbles -->
+                                    <circle cx="84" cy="145" r="3" fill="#ffffff" opacity="0.25" />
+                                    <circle cx="132" cy="162" r="2.2" fill="#ffffff" opacity="0.3" />
+                                    <circle cx="104" cy="128" r="1.8" fill="#ffffff" opacity="0.35" />
+                                </g>
+
+                                <!-- Liquid Top Surface Meniscus -->
+                                <ellipse id="svg-liquid-surface" cx="110" cy="97" rx="53" ry="8.5" fill="#6b443a" opacity="0.7" class="svg-layer-transition" />
+
+                                <!-- TOPPINGS LAYER -->
+                                <!-- 1. Stardust (Звёздная пыль) -->
+                                <g id="topping-stardust" opacity="1" class="svg-layer-transition">
+                                    <path class="stardust-sparkle" d="M 88 92 L 90 96 L 94 98 L 90 100 L 88 104 L 86 100 L 82 98 L 86 96 Z" fill="#fde047" />
+                                    <path class="stardust-sparkle" style="animation-delay: 0.7s" d="M 126 89 L 127.5 92 L 131 93.5 L 127.5 95 L 126 98 L 124.5 95 L 121 93.5 L 124.5 92 Z" fill="#67e8f9" />
+                                    <path class="stardust-sparkle" style="animation-delay: 1.4s" d="M 107 95 L 108.5 98 L 111.5 99.5 L 108.5 101 L 107 104 L 105.5 101 L 102.5 99.5 L 105.5 98 Z" fill="#f0abfc" />
+                                    <circle cx="98" cy="94" r="1.5" fill="#ffffff" />
+                                    <circle cx="118" cy="97" r="1.5" fill="#fde047" />
+                                    <circle cx="80" cy="96" r="1.2" fill="#67e8f9" />
+                                </g>
+
+                                <!-- 2. Marshmallow Clouds (Зефирные облака) -->
+                                <g id="topping-marshmallows" opacity="0" class="svg-layer-transition">
+                                    <rect x="76" y="88" width="18" height="12" rx="5" fill="#fff5f7" stroke="#fbcfe8" stroke-width="1" transform="rotate(-8 85 94)" />
+                                    <rect x="101" y="86" width="20" height="13" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" transform="rotate(5 111 92)" />
+                                    <rect x="124" y="89" width="17" height="11" rx="5" fill="#fdf2f8" stroke="#fbcfe8" stroke-width="1" transform="rotate(-4 132 94)" />
+                                    <rect x="92" y="93" width="16" height="10" rx="4.5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+                                </g>
+
+                                <!-- 3. Meteor Cinnamon (Корица метеора) -->
+                                <g id="topping-cinnamon" opacity="0" class="svg-layer-transition">
+                                    <!-- Cinnamon Stick -->
+                                    <rect x="118" y="76" width="8" height="32" rx="3" fill="#9a3412" stroke="#7c2d12" stroke-width="1" transform="rotate(28 122 92)" />
+                                    <line x1="121" y1="78" x2="112" y2="104" stroke="#c2410c" stroke-width="1.2" />
+                                    <!-- Spice Dust Specks -->
+                                    <circle cx="84" cy="96" r="1.6" fill="#b45309" />
+                                    <circle cx="92" cy="94" r="2" fill="#92400e" />
+                                    <circle cx="102" cy="98" r="1.7" fill="#b45309" />
+                                    <circle cx="110" cy="95" r="2.1" fill="#78350f" />
+                                    <circle cx="96" cy="100" r="1.4" fill="#d97706" />
+                                    <circle cx="128" cy="97" r="1.5" fill="#92400e" />
+                                </g>
+
+                                <!-- Outer Glass Shell & Highlights -->
+                                <path d="M 52 84 L 168 84 L 154 226 C 153 237 144 244 133 244 L 87 244 C 76 244 67 237 66 226 Z" fill="url(#glass-sheen)" stroke="rgba(255,255,255,0.48)" stroke-width="2" />
+                                <!-- Thick Glass Base -->
+                                <path d="M 67 232 L 153 232 L 152 238 C 150 245 143 249 134 249 L 86 249 C 77 249 70 245 68 238 Z" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
+                                <!-- Front Glass Rim -->
+                                <path d="M 52 84 A 58 10 0 0 0 168 84" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" />
+                                <!-- Left Vertical Specular Highlight -->
+                                <path d="M 63 98 L 73 222" stroke="rgba(255,255,255,0.38)" stroke-width="3" stroke-linecap="round" />
+                            </svg>
+                        </div>
+
+                        <!-- Generated Drink Name & Description -->
+                        <div class="text-center mt-2 z-10 w-full">
+                            <span class="inline-block text-[10px] uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 mb-1.5" data-i18n="drink_recipe_badge">
+                                Авторский рецепт
+                            </span>
+                            <h3 id="drink-generated-name" class="font-display font-bold text-base sm:text-lg text-white leading-snug">
+                                Туманность Ванильного Заката
+                            </h3>
+                            <p id="drink-generated-desc" class="text-xs mt-1.5 leading-relaxed line-clamp-3" style="color: var(--text-muted);">
+                                Бархатный эспрессо туманности с нежным овсяным молоком, искрой ванильной звезды и мерцающей звёздной пылью.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Ingredient Selectors (7 cols) -->
+                    <div class="md:col-span-7 flex flex-col gap-4">
+                        <!-- 1. Base -->
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 mb-2" style="color: var(--text-muted);">
+                                <i data-lucide="flame" class="w-3.5 h-3.5" style="color: var(--accent-primary);"></i>
+                                <span data-i18n="cat_base">Основа напитка</span>
+                            </label>
+                            <div id="group-base" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+
+                        <!-- 2. Milk -->
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 mb-2" style="color: var(--text-muted);">
+                                <i data-lucide="droplets" class="w-3.5 h-3.5" style="color: var(--accent-secondary);"></i>
+                                <span data-i18n="cat_milk">Молоко и текстура</span>
+                            </label>
+                            <div id="group-milk" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+
+                        <!-- 3. Syrup -->
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 mb-2" style="color: var(--text-muted);">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5" style="color: var(--accent-primary);"></i>
+                                <span data-i18n="cat_syrup">Космический сироп</span>
+                            </label>
+                            <div id="group-syrup" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+
+                        <!-- 4. Topping -->
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 mb-2" style="color: var(--text-muted);">
+                                <i data-lucide="star" class="w-3.5 h-3.5" style="color: var(--accent-secondary);"></i>
+                                <span data-i18n="cat_topping">Звёздный топпинг</span>
+                            </label>
+                            <div id="group-topping" class="grid grid-cols-3 gap-2"></div>
+                        </div>
+
+                        <!-- Brew Button -->
+                        <button type="button" onclick="brewDrink()" class="btn-cosmic-primary mt-2 w-full py-3.5 px-5 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 cursor-pointer">
+                            <i data-lucide="wand-2" class="w-5 h-5"></i>
+                            <span data-i18n="btn_brew">Приготовить напиток и узнать предсказание</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT COLUMN (5 cols on lg): LO-FI MIXER + POMODORO TIMER -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+
+                <!-- PROCEDURAL WEB AUDIO LO-FI MIXER -->
+                <section class="glass-card rounded-3xl p-5 sm:p-6 flex flex-col gap-4">
+                    <div class="flex items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="radio" class="w-5 h-5" style="color: var(--accent-primary);"></i>
+                                <h2 data-i18n="mixer_title" class="font-display font-bold text-lg sm:text-xl">Эмбиент и Lo-Fi Микшер</h2>
+                            </div>
+                            <p data-i18n="mixer_subtitle" class="text-xs mt-0.5" style="color: var(--text-muted);">
+                                Процедурный синтез звука в реальном времени
+                            </p>
+                        </div>
+
+                        <!-- Master Toggle Button -->
+                        <button type="button" id="master-audio-btn" onclick="toggleAllAudio()" class="px-3.5 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 border border-white/15 bg-white/10 hover:bg-white/15 transition cursor-pointer shrink-0">
+                            <i id="master-audio-icon" data-lucide="power" class="w-4 h-4"></i>
+                            <span id="master-audio-label" data-i18n="btn_audio_all_on">Включить всё</span>
+                        </button>
+                    </div>
+
+                    <!-- Real-time Sound Wave Visualizer -->
+                    <div class="rounded-2xl bg-black/30 border border-white/10 p-3 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 text-xs font-medium" style="color: var(--text-muted);">
+                            <i data-lucide="activity" class="w-4 h-4" style="color: var(--accent-secondary);"></i>
+                            <span id="audio-status-text" data-i18n="audio_standby">Эфир в режиме ожидания</span>
+                        </div>
+                        <canvas id="visualizer-canvas" class="w-36 sm:w-44 h-8 rounded-lg"></canvas>
+                    </div>
+
+                    <!-- 5 Procedural Channels -->
+                    <div id="audio-channels-list" class="flex flex-col gap-3">
+                        <!-- Rendered dynamically via JS -->
+                    </div>
+                </section>
+
+                <!-- COSMIC POMODORO FOCUS TIMER -->
+                <section class="glass-card rounded-3xl p-5 sm:p-6 flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="timer" class="w-5 h-5" style="color: var(--accent-secondary);"></i>
+                            <h2 data-i18n="timer_title" class="font-display font-bold text-lg sm:text-xl">Орбитальный таймер</h2>
+                        </div>
+                        <span id="timer-status-badge" class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/10 border border-white/10" style="color: var(--text-muted);">
+                            25:00
+                        </span>
+                    </div>
+
+                    <!-- Mode Tabs -->
+                    <div class="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-black/30 border border-white/10">
+                        <button type="button" onclick="setTimerMode('focus')" data-timer-mode="focus" class="timer-mode-btn py-2 px-2 rounded-xl text-xs font-semibold transition cursor-pointer">
+                            <span data-i18n="mode_focus">Фокус (25м)</span>
+                        </button>
+                        <button type="button" onclick="setTimerMode('short')" data-timer-mode="short" class="timer-mode-btn py-2 px-2 rounded-xl text-xs font-semibold transition cursor-pointer">
+                            <span data-i18n="mode_short">Перерыв (5м)</span>
+                        </button>
+                        <button type="button" onclick="setTimerMode('deep')" data-timer-mode="deep" class="timer-mode-btn py-2 px-2 rounded-xl text-xs font-semibold transition cursor-pointer">
+                            <span data-i18n="mode_deep">Космос (15м)</span>
+                        </button>
+                    </div>
+
+                    <!-- Countdown Display & Progress Bar -->
+                    <div class="flex flex-col items-center justify-center py-2">
+                        <div id="timer-display" class="font-mono-num text-4xl sm:text-5xl font-bold tracking-wider text-white drop-shadow-[0_0_16px_var(--accent-glow)]">
+                            25:00
+                        </div>
+                        <!-- Progress Track -->
+                        <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden mt-3.5">
+                            <div id="timer-progress-bar" class="h-full rounded-full transition-all duration-500" style="width: 100%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));"></div>
+                        </div>
+                    </div>
+
+                    <!-- Timer Controls -->
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <button type="button" id="timer-start-btn" onclick="startTimer()" class="btn-cosmic-primary py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="play" class="w-4 h-4"></i>
+                            <span data-i18n="btn_start">Старт</span>
+                        </button>
+                        <button type="button" id="timer-pause-btn" onclick="pauseTimer()" class="py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold bg-white/10 hover:bg-white/15 border border-white/15 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                            <i data-lucide="pause" class="w-4 h-4"></i>
+                            <span data-i18n="btn_pause">Пауза</span>
+                        </button>
+                        <button type="button" onclick="resetTimer()" class="py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold bg-white/10 hover:bg-white/15 border border-white/15 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                            <span data-i18n="btn_reset">Сброс</span>
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- COSMIC PREDICTION MODAL -->
+    <div id="prediction-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+        <div id="prediction-modal-card" class="glass-card rounded-3xl max-w-md w-full p-6 sm:p-7 relative border border-white/25 transform scale-95 transition-transform duration-300">
+            <!-- Close Button -->
+            <button type="button" onclick="closePredictionModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition cursor-pointer" aria-label="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <div class="flex flex-col items-center text-center">
+                <!-- Glowing Icon Badge -->
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-white/25" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">
+                    <i data-lucide="sparkles" class="w-8 h-8 text-white"></i>
+                </div>
+
+                <span data-i18n="modal_badge" class="text-[11px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-white/10 border border-white/15 mb-2">
+                    Ваш напиток готов
+                </span>
+
+                <h3 id="modal-drink-name" class="font-display font-bold text-xl sm:text-2xl text-white">
+                    Туманность Ванильного Заката
+                </h3>
+
+                <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-4"></div>
+
+                <p data-i18n="modal_prediction_label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--accent-secondary);">
+                    ✦ Космическое предсказание дня ✦
+                </p>
+
+                <blockquote id="modal-prediction-text" class="text-sm sm:text-base leading-relaxed italic text-white/95 bg-black/25 rounded-2xl p-4 border border-white/10">
+                    «Сегодня далёкая звезда осветит идею, которую вы давно откладывали. Сделайте первый шаг за чашкой тёплого напитка.»
+                </blockquote>
+
+                <div class="grid grid-cols-2 gap-3 w-full mt-6">
+                    <button type="button" onclick="newPredictionOnly()" class="py-3 px-4 rounded-2xl text-xs sm:text-sm font-semibold bg-white/10 hover:bg-white/15 border border-white/15 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span data-i18n="btn_another_prediction">Другое</span>
+                    </button>
+                    <button type="button" onclick="closePredictionModal()" class="btn-cosmic-primary py-3 px-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        <span data-i18n="btn_enjoy">Насладиться</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification for Timer Complete -->
+    <div id="cosmic-toast" class="fixed bottom-5 right-5 z-50 glass-card rounded-2xl px-4 py-3.5 flex items-center gap-3 border border-white/25 transform translate-y-24 opacity-0 transition-all duration-400 pointer-events-none max-w-sm">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background: var(--accent-primary);">
+            <i data-lucide="bell-ring" class="w-4 h-4 text-white"></i>
+        </div>
+        <div>
+            <p id="toast-title" class="text-sm font-bold text-white">Цикл завершён</p>
+            <p id="toast-desc" class="text-xs" style="color: var(--text-muted);">Время сделать глоток звёздного кофе.</p>
+        </div>
+    </div>
+
+    <script>
+        /* =========================================================================
+           1. MULTILINGUAL DICTIONARY (RU / KZ / EN)
+        ========================================================================= */
+        const I18N = {
+            ru: {
+                app_title: "Полуночная Космическая Кофейня",
+                app_subtitle: "Орбитальная станция «Кеплер-452b» • Lo-Fi Радио и Эмбиент",
+                live_badge: "В ЭФИРЕ",
+                theme_midnight: "Полночь",
+                theme_mars: "Марс",
+                theme_aurora: "Сияние",
+                barista_title: "Космический бариста",
+                barista_subtitle: "Соберите авторский напиток для ночного полёта сквозь туманности",
+                btn_random_drink: "Случайный рецепт",
+                drink_recipe_badge: "Авторский рецепт",
+                cat_base: "Основа напитка",
+                cat_milk: "Молоко и текстура",
+                cat_syrup: "Космический сироп",
+                cat_topping: "Звёздный топпинг",
+                btn_brew: "Приготовить напиток и узнать предсказание",
+                mixer_title: "Эмбиент и Lo-Fi Микшер",
+                mixer_subtitle: "Процедурный синтез звука в реальном времени",
+                btn_audio_all_on: "Включить всё",
+                btn_audio_all_off: "Выключить всё",
+                audio_standby: "Эфир в режиме ожидания",
+                audio_active: "Активных каналов: {n}",
+                timer_title: "Орбитальный таймер",
+                mode_focus: "Фокус (25м)",
+                mode_short: "Перерыв (5м)",
+                mode_deep: "Космос (15м)",
+                btn_start: "Старт",
+                btn_pause: "Пауза",
+                btn_reset: "Сброс",
+                modal_badge: "Ваш напиток готов",
+                modal_prediction_label: "✦ Космическое предсказание дня ✦",
+                btn_another_prediction: "Другое",
+                btn_enjoy: "Насладиться",
+                toast_timer_title: "Орбитальный цикл завершён!",
+                toast_timer_desc: "Сделайте паузу и насладитесь моментом в невесомости.",
+
+                // Audio channels
+                ch_rain_name: "Дождь за иллюминатором",
+                ch_rain_desc: "Мягкие капли космического дождя по куполу",
+                ch_ship_name: "Гул звездолёта",
+                ch_ship_desc: "Глубокий тёплый резонанс грави-двигателей",
+                ch_cat_name: "Мурчание космического кота",
+                ch_cat_desc: "Уютная вибрация корабельного талисмана",
+                ch_fire_name: "Плазменный камин",
+                ch_fire_desc: "Потрескивание солнечной плазмы в очаге",
+                ch_lofi_name: "Lo-Fi Синт-аккорды",
+                ch_lofi_desc: "Тёплые ночные джазовые прогрессии",
+
+                // Drink ingredients
+                base_espresso: "Эспрессо туманности",
+                base_matcha: "Матча лунного света",
+                base_cacao: "Какао чёрной дыры",
+                base_oolong: "Звёздный улун",
+
+                milk_oat: "Овсяное",
+                milk_coconut: "Кокосовое",
+                milk_almond: "Миндальное",
+                milk_none: "Без молока",
+
+                syrup_vanilla: "Ванильная звезда",
+                syrup_lavender: "Лавандовый космос",
+                syrup_caramel: "Солёная карамель",
+                syrup_none: "Без сиропа",
+
+                top_stardust: "Звёздная пыль",
+                top_marshmallow: "Зефирные облака",
+                top_cinnamon: "Корица метеора",
+
+                // Drink Name Generator Parts
+                name_prefix: {
+                    espresso: ["Гравитационный", "Полуночный", "Орбитальный", "Сверхновый"],
+                    matcha: ["Изумрудный", "Лунный", "Северный", "Нефритовый"],
+                    cacao: ["Бархатный", "Тёмный", "Галактический", "Обсидиановый"],
+                    oolong: ["Янтарный", "Эфирный", "Звёздный", "Туманный"]
+                },
+                name_core: {
+                    vanilla: ["Свет Веги", "Вальс Созвездий", "Рассвет Андромеды"],
+                    lavender: ["Сон Небулы", "Шёпот Пульсара", "Сумеречный Эфир"],
+                    caramel: ["Пояс Ориона", "Золотой Метеор", "Янтарный Сатурн"],
+                    none: ["Горизонт Событий", "Тихий Космос", "Млечный Путь"]
+                },
+                desc_template: "{base} с добавлением: {milk}, {syrup} и украшением «{topping}». Идеальный спутник для созерцания далёких галактик.",
+
+                predictions: [
+                    "Сегодня далёкая звезда осветит идею, которую вы давно откладывали. Сделайте первый шаг за чашкой тёплого напитка.",
+                    "В тишине между мыслями рождаются самые точные ответы. Доверьтесь своей внутренней навигации.",
+                    "Неожиданная встреча или сообщение принесёт вдохновение, словно комета, пролетающая мимо иллюминатора.",
+                    "Ваша текущая траектория ведёт к спокойствию и ясности. Не торопите орбиту — всё происходит вовремя.",
+                    "Маленький ритуал заботы о себе сегодня зарядит ваши батареи сильнее, чем термоядерный реактор.",
+                    "Звёзды советуют отпустить лишний шум и сфокусироваться на одном деле, которое по-настоящему греет душу.",
+                    "Скоро перед вами откроется новый горизонт. Сохраняйте любопытство исследователя и мягкость ночного джаза.",
+                    "Даже в самой глубокой темноте космоса всегда есть свет далёких солнц. Вы ближе к цели, чем кажется.",
+                    "Сегодня идеальный вечер, чтобы записать смелую мечту в бортовой журнал — Вселенная любит конкретику.",
+                    "Гармония приходит туда, где есть ритм и пауза. Позвольте себе выдохнуть и насладиться моментом.",
+                    "Ваше спокойствие — ваша суперсила. Наблюдайте за суетой так, словно смотрите на неё с высокой орбиты.",
+                    "Тёплая беседа или добрая улыбка сегодня создадут цепную реакцию света вокруг вас.",
+                    "Не бойтесь менять курс, если чувствуете зов нового созвездия. Корабль готов к манёвру.",
+                    "Секрет продуктивности этой недели скрыт в уютном балансе между глубоким фокусом и созерцанием звёзд.",
+                    "Пусть этот напиток станет якорем уюта: всё сложное постепенно станет простым и понятным."
+                ]
+            },
+
+            kz: {
+                app_title: "Түн ортасындағы ғарыш кофеханасы",
+                app_subtitle: "«Кеплер-452b» орбиталық станциясы • Lo-Fi Радио және Эмбиент",
+                live_badge: "ЭФИРДЕ",
+                theme_midnight: "Түн ортасы",
+                theme_mars: "Марс",
+                theme_aurora: "Шұғыла",
+                barista_title: "Ғарыш баристасы",
+                barista_subtitle: "Тұмандықтар арасындағы түнгі сапарға арналған авторлық сусын жасаңыз",
+                btn_random_drink: "Кездейсоқ рецепт",
+                drink_recipe_badge: "Авторлық рецепт",
+                cat_base: "Сусын негізі",
+                cat_milk: "Сүт және құрылым",
+                cat_syrup: "Ғарыш шәрбаты",
+                cat_topping: "Жұлдызды топпинг",
+                btn_brew: "Сусын дайындап, болжам білу",
+                mixer_title: "Эмбиент және Lo-Fi Микшер",
+                mixer_subtitle: "Нақты уақыттағы процедуралық дыбыс синтезі",
+                btn_audio_all_on: "Барлығын қосу",
+                btn_audio_all_off: "Барлығын өшіру",
+                audio_standby: "Эфир күту режимінде",
+                audio_active: "Белсенді арналар: {n}",
+                timer_title: "Орбиталық таймер",
+                mode_focus: "Зейін (25м)",
+                mode_short: "Үзіліс (5м)",
+                mode_deep: "Ғарыш (15м)",
+                btn_start: "Бастау",
+                btn_pause: "Кідірту",
+                btn_reset: "Қалпына келтіру",
+                modal_badge: "Сусыныңыз дайын",
+                modal_prediction_label: "✦ Күннің ғарыштық болжамы ✦",
+                btn_another_prediction: "Басқа болжам",
+                btn_enjoy: "Ләззат алу",
+                toast_timer_title: "Орбиталық цикл аяқталды!",
+                toast_timer_desc: "Сәл тынығып, салмақсыздық сәтінен ләззат алыңыз.",
+
+                // Audio channels
+                ch_rain_name: "Иллюминатор сыртындағы жаңбыр",
+                ch_rain_desc: "Күмбезге соғылған ғарыш жаңбырының жұмсақ тамшылары",
+                ch_ship_name: "Жұлдызкеме гуілі",
+                ch_ship_desc: "Гравитациялық қозғалтқыштардың терең жылы резонансы",
+                ch_cat_name: "Ғарыш мысығының пырылы",
+                ch_cat_desc: "Кеме тұмарының жайлы әрі тыныш тербелісі",
+                ch_fire_name: "Плазмалық камин",
+                ch_fire_desc: "Ошақтағы күн плазмасының сытырлаған жылуы",
+                ch_lofi_name: "Lo-Fi Синт-аккордтар",
+                ch_lofi_desc: "Жұмсақ түнгі джаз прогрессиялары",
+
+                // Drink ingredients
+                base_espresso: "Тұмандық эспрессосы",
+                base_matcha: "Ай сәулесі матчасы",
+                base_cacao: "Қара құрдым какаосы",
+                base_oolong: "Жұлдызды улун",
+
+                milk_oat: "Сұлы сүті",
+                milk_coconut: "Кокос сүті",
+                milk_almond: "Бадам сүті",
+                milk_none: "Сүтсіз",
+
+                syrup_vanilla: "Ваниль жұлдызы",
+                syrup_lavender: "Лаванда ғарышы",
+                syrup_caramel: "Тұзды карамель",
+                syrup_none: "Шәрбатсыз",
+
+                top_stardust: "Жұлдыз тозаңы",
+                top_marshmallow: "Зефир бұлттары",
+                top_cinnamon: "Метеор даршыны",
+
+                name_prefix: {
+                    espresso: ["Гравитациялық", "Түн ортасы", "Орбиталық", "Ғажайып"],
+                    matcha: ["Зүбәржат", "Ай сәулелі", "Солтүстік", "Нефрит"],
+                    cacao: ["Барқыт", "Терең", "Галактикалық", "Обсидиан"],
+                    oolong: ["Кәріптас", "Эфирлі", "Жұлдызды", "Тұманды"]
+                },
+                name_core: {
+                    vanilla: ["Вега жарығы", "Шоқжұлдыз вальсі", "Андромеда таңы"],
+                    lavender: ["Небула түсі", "Пульсар сыбыры", "Ымырт эфирі"],
+                    caramel: ["Орион белдеуі", "Алтын метеор", "Сатурн сақинасы"],
+                    none: ["Оқиғалар көкжиегі", "Тыныш ғарыш", "Құс жолы"]
+                },
+                desc_template: "{base}, қоспалары: {milk}, {syrup} және «{topping}» әшекейі. Алыс галактикаларды тамашалауға арналған мінсіз серік.",
+
+                predictions: [
+                    "Бүгін алыс жұлдыз көптен бері кейінге қалдырған идеяңызға жарық түсіреді. Жылы сусынмен алғашқы қадам жасаңыз.",
+                    "Ойлар арасындағы тыныштықта ең дәл жауаптар туады. Ішкі навигацияңызға сеніңіз.",
+                    "Күтпеген кездесу немесе хабарлама иллюминатор жанынан ұшып өткен кометадай шабыт сыйлайды.",
+                    "Сіздің қазіргі бағытыңыз айқындық пен тыныштыққа жетелейді. Орбитаны асықтырмаңыз — бәрі өз уақытымен болады.",
+                    "Өзіңізге деген кішкентай қамқорлық бүгін қуатыңызды термоядролық реактордан да артық толтырады.",
+                    "Жұлдыздар артық шуды босатып, жүрегіңізге жақын бір іске зейін қоюға кеңес береді.",
+                    "Жақында алдыңызда жаңа көкжиек ашылады. Зерттеушінің қызығушылығы мен түнгі джаздың жұмсақтығын сақтаңыз.",
+                    "Ғарыштың ең қою қараңғылығында да алыс күндердің жарығы бар. Сіз мақсатыңызға ойлағаннан да жақынсыз.",
+                    "Бүгін батыл арманыңызды борт журналына жазуға тамаша кеш — Ғалам нақтылықты жақсы көреді.",
+                    "Үйлесімділік ырғақ пен үзіліс бар жерге келеді. Терең тыныс алып, осы сәттен ләззат алыңыз.",
+                    "Сіздің сабырлылығыңыз — басты күшіңіз. Күйбең тірлікке биік орбитадан қарағандай көз салыңыз.",
+                    "Бүгінгі жылы әңгіме немесе мейірімді күлкі айналаңызда жарық толқынын тудырады.",
+                    "Жаңа шоқжұлдыздың шақыруын сезсеңіз, бағытты өзгертуден қорықпаңыз. Кеме маневрге дайын.",
+                    "Осы аптаның өнімділік құпиясы терең зейін мен жұлдыздарды тамашалаудың жайлы тепе-теңдігінде.",
+                    "Бұл сусын жайлылық тірегіне айналсын: күрделі нәрселер біртіндеп қарапайым әрі түсінікті болады."
+                ]
+            },
+
+            en: {
+                app_title: "Midnight Cosmic Coffee",
+                app_subtitle: "Orbital Station «Kepler-452b» • Lo-Fi Radio & Ambient",
+                live_badge: "ON AIR",
+                theme_midnight: "Midnight",
+                theme_mars: "Mars",
+                theme_aurora: "Aurora",
+                barista_title: "Cosmic Barista",
+                barista_subtitle: "Craft a signature beverage for your midnight voyage through nebulae",
+                btn_random_drink: "Randomize",
+                drink_recipe_badge: "Signature Recipe",
+                cat_base: "Drink Base",
+                cat_milk: "Milk & Texture",
+                cat_syrup: "Cosmic Syrup",
+                cat_topping: "Starlight Topping",
+                btn_brew: "Brew Drink & Reveal Fortune",
+                mixer_title: "Ambient & Lo-Fi Mixer",
+                mixer_subtitle: "Real-time procedural Web Audio synthesis",
+                btn_audio_all_on: "Turn All On",
+                btn_audio_all_off: "Mute All",
+                audio_standby: "Broadcast on standby",
+                audio_active: "Active channels: {n}",
+                timer_title: "Orbital Focus Timer",
+                mode_focus: "Focus (25m)",
+                mode_short: "Break (5m)",
+                mode_deep: "Deep Space (15m)",
+                btn_start: "Start",
+                btn_pause: "Pause",
+                btn_reset: "Reset",
+                modal_badge: "Your Drink is Ready",
+                modal_prediction_label: "✦ Cosmic Fortune of the Day ✦",
+                btn_another_prediction: "Another",
+                btn_enjoy: "Enjoy",
+                toast_timer_title: "Orbital Cycle Complete!",
+                toast_timer_desc: "Take a breath and savor a sip in zero gravity.",
+
+                // Audio channels
+                ch_rain_name: "Rain Outside the Viewport",
+                ch_rain_desc: "Gentle cosmic raindrops tapping against the dome",
+                ch_ship_name: "Starship Engine Hum",
+                ch_ship_desc: "Deep warm resonance of the gravity thrusters",
+                ch_cat_name: "Space Cat Purring",
+                ch_cat_desc: "Cozy low-frequency purr of the ship mascot",
+                ch_fire_name: "Plasma Fireplace",
+                ch_fire_desc: "Warm crackling solar plasma in the lounge hearth",
+                ch_lofi_name: "Lo-Fi Synth Chords",
+                ch_lofi_desc: "Warm late-night generative jazz progressions",
+
+                // Drink ingredients
+                base_espresso: "Nebula Espresso",
+                base_matcha: "Moonlight Matcha",
+                base_cacao: "Black Hole Cacao",
+                base_oolong: "Starlight Oolong",
+
+                milk_oat: "Oat Milk",
+                milk_coconut: "Coconut Milk",
+                milk_almond: "Almond Milk",
+                milk_none: "No Milk",
+
+                syrup_vanilla: "Vanilla Star",
+                syrup_lavender: "Lavender Cosmos",
+                syrup_caramel: "Salted Caramel",
+                syrup_none: "No Syrup",
+
+                top_stardust: "Stardust",
+                top_marshmallow: "Marshmallow Clouds",
+                top_cinnamon: "Meteor Cinnamon",
+
+                name_prefix: {
+                    espresso: ["Gravitational", "Midnight", "Orbital", "Supernova"],
+                    matcha: ["Emerald", "Moonlit", "Boreal", "Jade"],
+                    cacao: ["Velvet", "Obsidian", "Galactic", "Eclipse"],
+                    oolong: ["Amber", "Ethereal", "Astral", "Misty"]
+                },
+                name_core: {
+                    vanilla: ["Vega Light", "Constellation Waltz", "Andromeda Dawn"],
+                    lavender: ["Nebula Dream", "Pulsar Whisper", "Twilight Ether"],
+                    caramel: ["Orion Belt", "Golden Meteor", "Saturn Ring"],
+                    none: ["Event Horizon", "Quiet Cosmos", "Milky Way"]
+                },
+                desc_template: "{base} blended with {milk}, {syrup}, and crowned with {topping}. A cozy companion for gazing at distant galaxies.",
+
+                predictions: [
+                    "Tonight, a distant star will illuminate an idea you have been postponing. Take the first step over a warm cup.",
+                    "In the quiet space between thoughts, the clearest answers are born. Trust your internal navigation.",
+                    "An unexpected message or encounter will spark inspiration like a comet streaking past the viewport.",
+                    "Your current trajectory leads toward clarity and calm. Do not rush the orbit—everything arrives right on time.",
+                    "A small ritual of self-care tonight will recharge your cells faster than a fusion reactor.",
+                    "The stars suggest letting go of background noise and focusing on one craft that truly warms your soul.",
+                    "A new horizon is opening ahead of you. Keep the curiosity of an explorer and the softness of midnight jazz.",
+                    "Even in the deepest reaches of space, the light of distant suns endures. You are closer than you think.",
+                    "Tonight is ideal for logging a bold dream into your ship journal—the Universe appreciates clarity.",
+                    "Harmony arrives where there is both rhythm and pause. Allow yourself to exhale and inhabit this moment.",
+                    "Your calm presence is your superpower. Observe the rush as if watching from high orbit.",
+                    "A warm conversation or kind gesture today will set off a chain reaction of light around you.",
+                    "Never fear adjusting course when a new constellation calls. Your vessel is ready for the maneuver.",
+                    "This week's secret to flow lies in balancing deep focus with quiet stargazing.",
+                    "Let this cup be an anchor of comfort: what feels complex will gradually become simple and clear."
+                ]
+            }
+        };
+
+        /* =========================================================================
+           2. APPLICATION STATE
+        ========================================================================= */
+        const state = {
+            lang: 'ru',
+            theme: 'midnight',
+            drink: {
+                base: 'espresso',
+                milk: 'oat',
+                syrup: 'vanilla',
+                topping: 'stardust'
+            },
+            audio: {
+                rain:  { active: false, volume: 0.45 },
+                ship:  { active: false, volume: 0.40 },
+                cat:   { active: false, volume: 0.50 },
+                fire:  { active: false, volume: 0.42 },
+                lofi:  { active: false, volume: 0.38 }
+            },
+            timer: {
+                mode: 'focus', // focus: 25m, short: 5m, deep: 15m
+                durations: { focus: 25 * 60, short: 5 * 60, deep: 15 * 60 },
+                remaining: 25 * 60,
+                running: false,
+                intervalId: null
+            },
+            lastPredictionIdx: -1
+        };
+
+        /* =========================================================================
+           3. DRINK VISUAL CONFIG & CONSTRUCTOR LOGIC
+        ========================================================================= */
+        const DRINK_CONFIG = {
+            base: {
+                espresso: { top: '#5c3428', bottom: '#1c0d0a', surface: '#6f4234', icon: 'coffee' },
+                matcha:   { top: '#4d8b55', bottom: '#1b3b22', surface: '#5fa368', icon: 'leaf' },
+                cacao:    { top: '#3c2336', bottom: '#120914', surface: '#4e2e46', icon: 'moon' },
+                oolong:   { top: '#b87a3d', bottom: '#4a2912', surface: '#cc8b4a', icon: 'sun' }
+            },
+            milk: {
+                oat:     { c1: '#f5ebe0', c2: '#d5bdaf', foam: '#faf3eb', visible: true },
+                coconut: { c1: '#ffffff', c2: '#e2e8f0', foam: '#ffffff', visible: true },
+                almond:  { c1: '#eddcd2', c2: '#cb997e', foam: '#f7ede2', visible: true },
+                none:    { c1: '#ffffff', c2: '#ffffff', foam: '#ffffff', visible: false }
+            },
+            syrup: {
+                vanilla:  { c1: '#fef08a', c2: '#eab308', visible: true },
+                lavender: { c1: '#e9d5ff', c2: '#9333ea', visible: true },
+                caramel:  { c1: '#fdba74', c2: '#c2410c', visible: true },
+                none:     { c1: '#000000', c2: '#000000', visible: false }
+            },
+            topping: {
+                stardust:    { id: 'topping-stardust', icon: 'sparkles' },
+                marshmallow: { id: 'topping-marshmallows', icon: 'cloud' },
+                cinnamon:    { id: 'topping-cinnamon', icon: 'flame' }
+            }
+        };
+
+        function renderDrinkOptions() {
+            const groups = [
+                { key: 'base', elId: 'group-base', items: ['espresso', 'matcha', 'cacao', 'oolong'] },
+                { key: 'milk', elId: 'group-milk', items: ['oat', 'coconut', 'almond', 'none'] },
+                { key: 'syrup', elId: 'group-syrup', items: ['vanilla', 'lavender', 'caramel', 'none'] },
+                { key: 'topping', elId: 'group-topping', items: ['stardust', 'marshmallow', 'cinnamon'] }
+            ];
+
+            groups.forEach(group => {
+                const container = document.getElementById(group.elId);
+                if (!container) return;
+                container.innerHTML = '';
+
+                group.items.forEach(itemKey => {
+                    const isSelected = state.drink[group.key] === itemKey;
+                    const i18nKey = `${group.key === 'topping' ? 'top' : group.key}_${itemKey}`;
+                    const label = I18N[state.lang][i18nKey];
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `ingredient-pill ${isSelected ? 'selected' : ''} px-3 py-2.5 rounded-xl text-xs sm:text-[13px] font-medium flex items-center justify-center gap-1.5 text-center cursor-pointer`;
+                    btn.innerHTML = `<span>${label}</span>`;
+                    btn.onclick = () => {
+                        state.drink[group.key] = itemKey;
+                        playSoftUiClick();
+                        renderDrinkOptions();
+                        updateDrinkVisuals();
+                    };
+                    container.appendChild(btn);
+                });
+            });
+        }
+
+        function updateDrinkVisuals() {
+            const { base, milk, syrup, topping } = state.drink;
+            const bCfg = DRINK_CONFIG.base[base];
+            const mCfg = DRINK_CONFIG.milk[milk];
+            const sCfg = DRINK_CONFIG.syrup[syrup];
+
+            // Update SVG Base Gradient
+            document.getElementById('grad-base-top').setAttribute('stop-color', bCfg.top);
+            document.getElementById('grad-base-bottom').setAttribute('stop-color', bCfg.bottom);
+            document.getElementById('svg-liquid-surface').setAttribute('fill', mCfg.visible ? mCfg.foam : bCfg.surface);
+            document.getElementById('glass-glow').style.background = bCfg.top;
+
+            // Update Milk Layer
+            const milkLayer = document.getElementById('svg-milk-layer');
+            if (mCfg.visible) {
+                milkLayer.setAttribute('opacity', '1');
+                document.getElementById('grad-milk-1').setAttribute('stop-color', mCfg.c1);
+                document.getElementById('grad-milk-2').setAttribute('stop-color', mCfg.c2);
+                document.getElementById('svg-foam-top').setAttribute('fill', mCfg.foam);
+            } else {
+                milkLayer.setAttribute('opacity', '0');
+            }
+
+            // Update Syrup Layer
+            const syrupLayer = document.getElementById('svg-syrup-layer');
+            if (sCfg.visible) {
+                syrupLayer.setAttribute('opacity', '1');
+                document.getElementById('grad-syrup-1').setAttribute('stop-color', sCfg.c1);
+                document.getElementById('grad-syrup-2').setAttribute('stop-color', sCfg.c2);
+            } else {
+                syrupLayer.setAttribute('opacity', '0');
+            }
+
+            // Update Toppings Visibility
+            Object.entries(DRINK_CONFIG.topping).forEach(([tKey, tCfg]) => {
+                const el = document.getElementById(tCfg.id);
+                if (el) el.setAttribute('opacity', topping === tKey ? '1' : '0');
+            });
+
+            // Deterministic poetic recipe name & description
+            const dict = I18N[state.lang];
+            const hash = (base.length * 7 + milk.length * 13 + syrup.length * 17 + topping.length * 19);
+            const prefixes = dict.name_prefix[base];
+            const cores = dict.name_core[syrup];
+            const prefix = prefixes[hash % prefixes.length];
+            const core = cores[(hash + milk.length) % cores.length];
+            const fullName = `${prefix} «${core}»`;
+
+            const desc = dict.desc_template
+                .replace('{base}', dict[`base_${base}`])
+                .replace('{milk}', dict[`milk_${milk}`].toLowerCase())
+                .replace('{syrup}', dict[`syrup_${syrup}`].toLowerCase())
+                .replace('{topping}', dict[`top_${topping}`].toLowerCase());
+
+            document.getElementById('drink-generated-name').textContent = fullName;
+            document.getElementById('drink-generated-desc').textContent = desc;
+            document.getElementById('modal-drink-name').textContent = fullName;
+        }
+
+        function randomizeDrink() {
+            const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+            state.drink.base = pick(['espresso', 'matcha', 'cacao', 'oolong']);
+            state.drink.milk = pick(['oat', 'coconut', 'almond', 'none']);
+            state.drink.syrup = pick(['vanilla', 'lavender', 'caramel', 'none']);
+            state.drink.topping = pick(['stardust', 'marshmallow', 'cinnamon']);
+            playSoftUiClick();
+            renderDrinkOptions();
+            updateDrinkVisuals();
+        }
+
+        function brewDrink() {
+            playCosmicChime();
+            newPredictionOnly();
+            const modal = document.getElementById('prediction-modal');
+            const card = document.getElementById('prediction-modal-card');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            });
+        }
+
+        function newPredictionOnly() {
+            const list = I18N[state.lang].predictions;
+            let idx = Math.floor(Math.random() * list.length);
+            if (idx === state.lastPredictionIdx && list.length > 1) {
+                idx = (idx + 1) % list.length;
+            }
+            state.lastPredictionIdx = idx;
+            document.getElementById('modal-prediction-text').textContent = `«${list[idx]}»`;
+        }
+
+        function closePredictionModal() {
+            const modal = document.getElementById('prediction-modal');
+            const card = document.getElementById('prediction-modal-card');
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 280);
+        }
+
+        /* =========================================================================
+           4. PROCEDURAL WEB AUDIO ENGINE (5 REAL-TIME GENERATIVE CHANNELS)
+        ========================================================================= */
+        let audioCtx = null;
+        let masterGain = null;
+        let analyserNode = null;
+        const channelNodes = {};
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0.85;
+
+                analyserNode = audioCtx.createAnalyser();
+                analyserNode.fftSize = 64;
+
+                masterGain.connect(analyserNode);
+                analyserNode.connect(audioCtx.destination);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Helper: Create Pink Noise Buffer
+        function createPinkNoiseBuffer(durationSec = 4) {
+            const bufferSize = audioCtx.sampleRate * durationSec;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.04;
+                b6 = white * 0.115926;
+            }
+            return buffer;
+        }
+
+        function startChannelAudio(key) {
+            initAudioContext();
+            if (channelNodes[key]) return;
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(Math.max(0.01, state.audio[key].volume), audioCtx.currentTime + 0.5);
+            gain.connect(masterGain);
+
+            if (key === 'rain') {
+                // 1) Rain outside viewport: Filtered Pink Noise
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = createPinkNoiseBuffer(5);
+                noise.loop = true;
+
+                const lowpass = audioCtx.createBiquadFilter();
+                lowpass.type = 'lowpass';
+                lowpass.frequency.value = 950;
+
+                const highpass = audioCtx.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.value = 180;
+
+                noise.connect(highpass);
+                highpass.connect(lowpass);
+                lowpass.connect(gain);
+                noise.start();
+
+                channelNodes[key] = {
+                    gain,
+                    stop: () => { try { noise.stop(); noise.disconnect(); } catch(e){} }
+                };
+            }
+            else if (key === 'ship') {
+                // 2) Starship Hum: Detuned low-frequency oscillators + slow LFO filter
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                osc1.type = 'sawtooth';
+                osc2.type = 'triangle';
+                osc1.frequency.value = 55;   // A1
+                osc2.frequency.value = 55.6; // Slight warm beating
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 135;
+
+                const lfo = audioCtx.createOscillator();
+                const lfoGain = audioCtx.createGain();
+                lfo.frequency.value = 0.14;
+                lfoGain.gain.value = 30;
+                lfo.connect(lfoGain);
+                lfoGain.connect(filter.frequency);
+
+                const subGain = audioCtx.createGain();
+                subGain.gain.value = 0.35;
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(subGain);
+                subGain.connect(gain);
+
+                osc1.start();
+                osc2.start();
+                lfo.start();
+
+                channelNodes[key] = {
+                    gain,
+                    stop: () => { try { osc1.stop(); osc2.stop(); lfo.stop(); } catch(e){} }
+                };
+            }
+            else if (key === 'cat') {
+                // 3) Space Cat Purring: ~26Hz fundamental + harmonic modulated by breathing LFO
+                const carrier = audioCtx.createOscillator();
+                carrier.type = 'sawtooth';
+                carrier.frequency.value = 26.5;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 150;
+
+                const breathGain = audioCtx.createGain();
+                breathGain.gain.value = 0.35;
+
+                const breathLfo = audioCtx.createOscillator();
+                breathLfo.type = 'sine';
+                breathLfo.frequency.value = 0.38; // ~23 breaths/min cozy purr
+
+                const breathDepth = audioCtx.createGain();
+                breathDepth.gain.value = 0.25;
+
+                breathLfo.connect(breathDepth);
+                breathDepth.connect(breathGain.gain);
+
+                carrier.connect(filter);
+                filter.connect(breathGain);
+                breathGain.connect(gain);
+
+                carrier.start();
+                breathLfo.start();
+
+                channelNodes[key] = {
+                    gain,
+                    stop: () => { try { carrier.stop(); breathLfo.stop(); } catch(e){} }
+                };
+            }
+            else if (key === 'fire') {
+                // 4) Plasma Fireplace: Warm low hiss + procedural random crackle impulses
+                const baseNoise = audioCtx.createBufferSource();
+                baseNoise.buffer = createPinkNoiseBuffer(4);
+                baseNoise.loop = true;
+
+                const lp = audioCtx.createBiquadFilter();
+                lp.type = 'lowpass';
+                lp.frequency.value = 340;
+
+                const hissGain = audioCtx.createGain();
+                hissGain.gain.value = 0.5;
+
+                baseNoise.connect(lp);
+                lp.connect(hissGain);
+                hissGain.connect(gain);
+                baseNoise.start();
+
+                // Random crackle generator interval
+                const crackleTimer = setInterval(() => {
+                    if (!audioCtx || !state.audio.fire.active) return;
+                    if (Math.random() > 0.42) {
+                        const popOsc = audioCtx.createOscillator();
+                        const popGain = audioCtx.createGain();
+                        const popFilter = audioCtx.createBiquadFilter();
+
+                        popOsc.type = 'square';
+                        popOsc.frequency.value = 700 + Math.random() * 1900;
+                        popFilter.type = 'bandpass';
+                        popFilter.frequency.value = 1200 + Math.random() * 1600;
+
+                        const now = audioCtx.currentTime;
+                        const amp = (0.04 + Math.random() * 0.12);
+                        popGain.gain.setValueAtTime(0.001, now);
+                        popGain.gain.exponentialRampToValueAtTime(amp, now + 0.004);
+                        popGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025 + Math.random() * 0.03);
+
+                        popOsc.connect(popFilter);
+                        popFilter.connect(popGain);
+                        popGain.connect(gain);
+
+                        popOsc.start(now);
+                        popOsc.stop(now + 0.06);
+                    }
+                }, 130);
+
+                channelNodes[key] = {
+                    gain,
+                    stop: () => {
+                        clearInterval(crackleTimer);
+                        try { baseNoise.stop(); } catch(e){}
+                    }
+                };
+            }
+            else if (key === 'lofi') {
+                // 5) Generative Lo-Fi Synth Chords (Warm electric piano / pad progressions)
+                const chords = [
+                    [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj9
+                    [164.81, 196.00, 246.94, 293.66, 392.00], // Em7
+                    [146.83, 174.61, 220.00, 261.63, 329.63], // Dm9
+                    [130.81, 196.00, 246.94, 293.66, 329.63]  // Cmaj9
+                ];
+                let chordIdx = 0;
+
+                const playChord = () => {
+                    if (!audioCtx || !state.audio.lofi.active) return;
+                    const freqs = chords[chordIdx % chords.length];
+                    chordIdx++;
+                    const now = audioCtx.currentTime;
+
+                    const chordFilter = audioCtx.createBiquadFilter();
+                    chordFilter.type = 'lowpass';
+                    chordFilter.frequency.setValueAtTime(420, now);
+                    chordFilter.frequency.exponentialRampToValueAtTime(860, now + 1.6);
+                    chordFilter.frequency.exponentialRampToValueAtTime(360, now + 4.8);
+                    chordFilter.connect(gain);
+
+                    freqs.forEach((f, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        osc.type = i % 2 === 0 ? 'triangle' : 'sine';
+                        // Slight Lo-Fi tape detune
+                        osc.frequency.value = f + (Math.random() * 1.4 - 0.7);
+
+                        noteGain.gain.setValueAtTime(0.0001, now);
+                        noteGain.gain.linearRampToValueAtTime(0.065, now + 0.85 + i * 0.08);
+                        noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 5.1);
+
+                        osc.connect(noteGain);
+                        noteGain.connect(chordFilter);
+
+                        osc.start(now);
+                        osc.stop(now + 5.2);
+                    });
+                };
+
+                playChord();
+                const chordInterval = setInterval(playChord, 4800);
+
+                channelNodes[key] = {
+                    gain,
+                    stop: () => clearInterval(chordInterval)
+                };
+            }
+        }
+
+        function stopChannelAudio(key) {
+            const node = channelNodes[key];
+            if (!node) return;
+            try {
+                node.gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.15);
+            } catch (e) {}
+            setTimeout(() => {
+                node.stop();
+                delete channelNodes[key];
+            }, 260);
+        }
+
+        function toggleChannel(key) {
+            state.audio[key].active = !state.audio[key].active;
+            if (state.audio[key].active) {
+                startChannelAudio(key);
+            } else {
+                stopChannelAudio(key);
+            }
+            renderAudioMixer();
+        }
+
+        function setChannelVolume(key, val) {
+            const vol = parseFloat(val);
+            state.audio[key].volume = vol;
+            if (channelNodes[key] && audioCtx) {
+                channelNodes[key].gain.gain.setTargetAtTime(Math.max(0.001, vol), audioCtx.currentTime, 0.05);
+            }
+            // Auto-activate if user drags slider while off
+            if (!state.audio[key].active && vol > 0.02) {
+                state.audio[key].active = true;
+                startChannelAudio(key);
+                renderAudioMixer();
+            }
+        }
+
+        function toggleAllAudio() {
+            const keys = Object.keys(state.audio);
+            const anyActive = keys.some(k => state.audio[k].active);
+            const targetState = !anyActive;
+
+            keys.forEach(k => {
+                state.audio[k].active = targetState;
+                if (targetState) {
+                    startChannelAudio(k);
+                } else {
+                    stopChannelAudio(k);
+                }
+            });
+            renderAudioMixer();
+        }
+
+        function renderAudioMixer() {
+            const container = document.getElementById('audio-channels-list');
+            const dict = I18N[state.lang];
+            const channelsMeta = [
+                { key: 'rain', icon: 'cloud-rain' },
+                { key: 'ship', icon: 'rocket' },
+                { key: 'cat',  icon: 'cat' },
+                { key: 'fire', icon: 'flame' },
+                { key: 'lofi', icon: 'music' }
+            ];
+
+            container.innerHTML = '';
+            let activeCount = 0;
+
+            channelsMeta.forEach(({ key, icon }) => {
+                const ch = state.audio[key];
+                if (ch.active) activeCount++;
+
+                const row = document.createElement('div');
+                row.className = `rounded-2xl p-3.5 border transition-all ${ch.active ? 'bg-white/10 border-white/25' : 'bg-black/20 border-white/10'}`;
+                row.innerHTML = `
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors" style="background: ${ch.active ? 'var(--accent-primary)' : 'rgba(255,255,255,0.07)'};">
+                                <i data-lucide="${icon}" class="w-4 h-4 text-white"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs sm:text-sm font-semibold text-white truncate">${dict[`ch_${key}_name`]}</div>
+                                <div class="text-[11px] truncate" style="color: var(--text-muted);">${dict[`ch_${key}_desc`]}</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="toggleChannel('${key}')" class="cosmic-toggle ${ch.active ? 'active' : ''}" aria-label="${dict[`ch_${key}_name`]}"></button>
+                    </div>
+                    <div class="mt-2.5 flex items-center gap-2.5 pl-12">
+                        <i data-lucide="volume-1" class="w-3.5 h-3.5 shrink-0" style="color: var(--text-muted);"></i>
+                        <input type="range" min="0" max="1" step="0.01" value="${ch.volume}"
+                            oninput="setChannelVolume('${key}', this.value)"
+                            class="cosmic-slider" aria-label="Volume">
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            // Update Master Button & Status Text
+            const masterLabel = document.getElementById('master-audio-label');
+            const statusText = document.getElementById('audio-status-text');
+            if (activeCount > 0) {
+                masterLabel.textContent = dict.btn_audio_all_off;
+                statusText.textContent = dict.audio_active.replace('{n}', activeCount);
+                statusText.style.color = 'var(--text-main)';
+            } else {
+                masterLabel.textContent = dict.btn_audio_all_on;
+                statusText.textContent = dict.audio_standby;
+                statusText.style.color = 'var(--text-muted)';
+            }
+
+            lucide.createIcons();
+        }
+
+        // Subtle UI sound effects via Web Audio API
+        function playSoftUiClick() {
+            try {
+                initAudioContext();
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(780, audioCtx.currentTime + 0.05);
+                g.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.06);
+                osc.connect(g);
+                g.connect(masterGain);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.07);
+            } catch (e) {}
+        }
+
+        function playCosmicChime() {
+            try {
+                initAudioContext();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    osc.type = 'sine';
+                    const start = audioCtx.currentTime + idx * 0.09;
+                    osc.frequency.setValueAtTime(freq, start);
+                    g.gain.setValueAtTime(0.001, start);
+                    g.gain.linearRampToValueAtTime(0.08, start + 0.04);
+                    g.gain.exponentialRampToValueAtTime(0.0001, start + 1.4);
+                    osc.connect(g);
+                    g.connect(masterGain);
+                    osc.start(start);
+                    osc.stop(start + 1.45);
+                });
+            } catch (e) {}
+        }
+
+        /* =========================================================================
+           5. POMODORO ORBITAL TIMER
+        ========================================================================= */
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateTimerUI() {
+            const total = state.timer.durations[state.timer.mode];
+            const rem = state.timer.remaining;
+            const formatted = formatTime(rem);
+
+            document.getElementById('timer-display').textContent = formatted;
+            document.getElementById('timer-status-badge').textContent = formatted;
+            document.getElementById('timer-progress-bar').style.width = `${(rem / total) * 100}%`;
+
+            document.querySelectorAll('.timer-mode-btn').forEach(btn => {
+                const isCurrent = btn.getAttribute('data-timer-mode') === state.timer.mode;
+                if (isCurrent) {
+                    btn.style.background = 'var(--pill-active-bg)';
+                    btn.style.color = '#ffffff';
+                    btn.style.boxShadow = '0 0 12px var(--accent-glow)';
+                } else {
+                    btn.style.background = 'transparent';
+                    btn.style.color = 'var(--text-muted)';
+                    btn.style.boxShadow = 'none';
+                }
+            });
+        }
+
+        function setTimerMode(mode) {
+            pauseTimer();
+            state.timer.mode = mode;
+            state.timer.remaining = state.timer.durations[mode];
+            playSoftUiClick();
+            updateTimerUI();
+        }
+
+        function startTimer() {
+            if (state.timer.running) return;
+            initAudioContext();
+            state.timer.running = true;
+            state.timer.intervalId = setInterval(() => {
+                if (state.timer.remaining > 0) {
+                    state.timer.remaining--;
+                    updateTimerUI();
+                } else {
+                    pauseTimer();
+                    playCosmicChime();
+                    showCosmicToast();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            state.timer.running = false;
+            if (state.timer.intervalId) {
+                clearInterval(state.timer.intervalId);
+                state.timer.intervalId = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            state.timer.remaining = state.timer.durations[state.timer.mode];
+            playSoftUiClick();
+            updateTimerUI();
+        }
+
+        function showCosmicToast() {
+            const toast = document.getElementById('cosmic-toast');
+            const dict = I18N[state.lang];
+            document.getElementById('toast-title').textContent = dict.toast_timer_title;
+            document.getElementById('toast-desc').textContent = dict.toast_timer_desc;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 5000);
+        }
+
+        /* =========================================================================
+           6. THEME & LANGUAGE SWITCHERS
+        ========================================================================= */
+        const CANVAS_THEME_COLORS = {
+            midnight: {
+                bg: '#090717',
+                nebulas: ['rgba(124, 58, 237, 0.16)', 'rgba(56, 189, 248, 0.12)', 'rgba(192, 132, 252, 0.14)'],
+                starTint: '#e9d5ff',
+                meteor: '#a78bfa'
+            },
+            mars: {
+                bg: '#17080d',
+                nebulas: ['rgba(244, 63, 94, 0.16)', 'rgba(245, 158, 11, 0.13)', 'rgba(251, 113, 133, 0.14)'],
+                starTint: '#ffe4e6',
+                meteor: '#fb7185'
+            },
+            aurora: {
+                bg: '#051412',
+                nebulas: ['rgba(16, 185, 129, 0.16)', 'rgba(14, 165, 233, 0.14)', 'rgba(52, 211, 153, 0.13)'],
+                starTint: '#d1fae5',
+                meteor: '#34d399'
+            }
+        };
+
+        function setTheme(themeKey) {
+            state.theme = themeKey;
+            document.body.setAttribute('data-theme', themeKey);
+
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                const active = btn.getAttribute('data-theme-btn') === themeKey;
+                btn.style.background = active ? 'var(--pill-active-bg)' : 'transparent';
+                btn.style.color = active ? '#ffffff' : 'var(--text-muted)';
+            });
+            playSoftUiClick();
+        }
+
+        function setLanguage(lang) {
+            state.lang = lang;
+            document.documentElement.lang = lang;
+            const dict = I18N[lang];
+
+            document.getElementById('app-title').textContent = dict.app_title;
+            document.getElementById('app-subtitle').textContent = dict.app_subtitle;
+            document.getElementById('live-badge').textContent = dict.live_badge;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.textContent = dict[key];
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const active = btn.getAttribute('data-lang-btn') === lang;
+                btn.style.background = active ? 'var(--pill-active-bg)' : 'transparent';
+                btn.style.color = active ? '#ffffff' : 'var(--text-muted)';
+            });
+
+            renderDrinkOptions();
+            updateDrinkVisuals();
+            renderAudioMixer();
+
+            if (state.lastPredictionIdx >= 0) {
+                document.getElementById('modal-prediction-text').textContent = `«${dict.predictions[state.lastPredictionIdx % dict.predictions.length]}»`;
+            }
+        }
+
+        /* =========================================================================
+           7. HTML5 CANVAS: STARFIELD, SHOOTING STARS, NEBULAE & AUDIO VISUALIZER
+        ========================================================================= */
+        const cosmosCanvas = document.getElementById('cosmos-canvas');
+        const cCtx = cosmosCanvas.getContext('2d');
+        let stars = [];
+        let nebulas = [];
+        let meteors = [];
+
+        function resizeCosmosCanvas() {
+            cosmosCanvas.width = window.innerWidth;
+            cosmosCanvas.height = window.innerHeight;
+            initCosmosEntities();
+        }
+
+        function initCosmosEntities() {
+            const count = Math.min(180, Math.floor((cosmosCanvas.width * cosmosCanvas.height) / 9000));
+            stars = Array.from({ length: count }, () => ({
+                x: Math.random() * cosmosCanvas.width,
+                y: Math.random() * cosmosCanvas.height,
+                r: Math.random() * 1.6 + 0.4,
+                alpha: Math.random(),
+                speed: (Math.random() * 0.015 + 0.004) * (Math.random() > 0.5 ? 1 : -1),
+                driftX: (Math.random() - 0.5) * 0.08
+            }));
+
+            nebulas = Array.from({ length: 4 }, (_, i) => ({
+                x: Math.random() * cosmosCanvas.width,
+                y: Math.random() * cosmosCanvas.height,
+                r: Math.max(cosmosCanvas.width, cosmosCanvas.height) * (0.28 + Math.random() * 0.18),
+                vx: (Math.random() - 0.5) * 0.22,
+                vy: (Math.random() - 0.5) * 0.22,
+                colorIdx: i % 3
+            }));
+        }
+
+        function spawnMeteor() {
+            meteors.push({
+                x: Math.random() * cosmosCanvas.width * 1.1,
+                y: Math.random() * cosmosCanvas.height * 0.45,
+                len: 90 + Math.random() * 90,
+                speed: 9 + Math.random() * 6,
+                angle: Math.PI * 0.22 + (Math.random() * 0.1 - 0.05),
+                life: 1.0
+            });
+        }
+
+        function renderCosmosLoop() {
+            const palette = CANVAS_THEME_COLORS[state.theme];
+            cCtx.clearRect(0, 0, cosmosCanvas.width, cosmosCanvas.height);
+
+            // 1. Floating Nebulae
+            nebulas.forEach(n => {
+                n.x += n.vx;
+                n.y += n.vy;
+                if (n.x < -n.r * 0.5 || n.x > cosmosCanvas.width + n.r * 0.5) n.vx *= -1;
+                if (n.y < -n.r * 0.5 || n.y > cosmosCanvas.height + n.r * 0.5) n.vy *= -1;
+
+                const grad = cCtx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+                grad.addColorStop(0, palette.nebulas[n.colorIdx]);
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                cCtx.fillStyle = grad;
+                cCtx.beginPath();
+                cCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                cCtx.fill();
+            });
+
+            // 2. Twinkling Stars
+            stars.forEach(s => {
+                s.alpha += s.speed;
+                if (s.alpha >= 1 || s.alpha <= 0.15) s.speed *= -1;
+                s.x += s.driftX;
+                if (s.x < 0) s.x = cosmosCanvas.width;
+                if (s.x > cosmosCanvas.width) s.x = 0;
+
+                cCtx.globalAlpha = Math.max(0.1, Math.min(1, s.alpha));
+                cCtx.fillStyle = palette.starTint;
+                cCtx.beginPath();
+                cCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                cCtx.fill();
+            });
+            cCtx.globalAlpha = 1;
+
+            // 3. Occasional Shooting Stars
+            if (Math.random() < 0.0045 && meteors.length < 2) {
+                spawnMeteor();
+            }
+
+            for (let i = meteors.length - 1; i >= 0; i--) {
+                const m = meteors[i];
+                const dx = Math.cos(m.angle) * m.speed;
+                const dy = Math.sin(m.angle) * m.speed;
+                m.x -= dx;
+                m.y += dy;
+                m.life -= 0.016;
+
+                if (m.life <= 0) {
+                    meteors.splice(i, 1);
+                    continue;
+                }
+
+                const tailX = m.x + Math.cos(m.angle) * m.len;
+                const tailY = m.y - Math.sin(m.angle) * m.len;
+                const grad = cCtx.createLinearGradient(m.x, m.y, tailX, tailY);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${m.life})`);
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                cCtx.strokeStyle = grad;
+                cCtx.lineWidth = 2;
+                cCtx.lineCap = 'round';
+                cCtx.beginPath();
+                cCtx.moveTo(m.x, m.y);
+                cCtx.lineTo(tailX, tailY);
+                cCtx.stroke();
+            }
+
+            renderSoundVisualizer();
+            requestAnimationFrame(renderCosmosLoop);
+        }
+
+        // Audio Equalizer / Waveform Visualizer Canvas
+        const visCanvas = document.getElementById('visualizer-canvas');
+        const vCtx = visCanvas.getContext('2d');
+
+        function renderSoundVisualizer() {
+            if (!visCanvas) return;
+            const rect = visCanvas.getBoundingClientRect();
+            if (visCanvas.width !== Math.floor(rect.width) || visCanvas.height !== Math.floor(rect.height)) {
+                visCanvas.width = Math.max(120, Math.floor(rect.width));
+                visCanvas.height = Math.max(28, Math.floor(rect.height));
+            }
+
+            const w = visCanvas.width;
+            const h = visCanvas.height;
+            vCtx.clearRect(0, 0, w, h);
+
+            const bars = 20;
+            const barWidth = (w / bars) * 0.58;
+            const gap = w / bars;
+            const anyActive = Object.values(state.audio).some(c => c.active);
+
+            let freqData = null;
+            if (analyserNode && anyActive) {
+                freqData = new Uint8Array(analyserNode.frequencyBinCount);
+                analyserNode.getByteFrequencyData(freqData);
+            }
+
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-secondary').trim() || '#4cc9f0';
+            vCtx.fillStyle = accentColor;
+
+            for (let i = 0; i < bars; i++) {
+                let amp = 0.12;
+                if (anyActive && freqData) {
+                    const raw = freqData[i % freqData.length] / 255;
+                    const wave = Math.sin(Date.now() * 0.005 + i * 0.55) * 0.18 + 0.25;
+                    amp = Math.max(0.16, Math.min(0.95, raw * 0.85 + wave));
+                }
+                const barH = Math.max(3, amp * h);
+                const x = i * gap + (gap - barWidth) / 2;
+                const y = (h - barH) / 2;
+
+                vCtx.globalAlpha = anyActive ? 0.9 : 0.3;
+                vCtx.beginPath();
+                vCtx.roundRect(x, y, barWidth, barH, 3);
+                vCtx.fill();
+            }
+            vCtx.globalAlpha = 1;
+        }
+
+        /* =========================================================================
+           8. INITIALIZATION ON WINDOW LOAD
+        ========================================================================= */
+        window.addEventListener('resize', resizeCosmosCanvas);
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePredictionModal();
+        });
+
+        window.onload = function () {
+            resizeCosmosCanvas();
+            setTheme('midnight');
+            setLanguage('ru');
+            updateTimerUI();
+            lucide.createIcons();
+            renderCosmosLoop();
+        };
+    </script>
+</body>
+</html>
